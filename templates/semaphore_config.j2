@@ -1,0 +1,53 @@
+{{ {
+  "bolt":  {
+    "host": semaphore_bolt_host
+  },
+  "mysql":  {
+    "host": semaphore_mysql_host,
+    "user": semaphore_mysql_user,
+    "pass": semaphore_mysql_pass,
+    "name": semaphore_mysql_db_name,
+    "options":  {}
+  },
+  "postgres":  {
+    "host": semaphore_postgres_host,
+    "user": semaphore_postgres_user,
+    "pass": semaphore_postgres_pass,
+    "name": semaphore_postgres_db_name,
+    "options":  {}
+  },
+  "dialect": semaphore_dialect,
+  "port": semaphore_port,
+  "interface": semaphore_interface,
+  "tmp_path": "/tmp/semaphore",
+  "cookie_hash": "RsDpJNlVo36pen6aeheSby/CGbjTQJc/UTor5NzlRLg=",
+  "cookie_encryption": "pEBsVluO5RqSQsKB0DI1s6E/okgmYCZW7ROdR6e3tDc=",
+  "access_key_encryption": "9Et2XdTW6OJET6zTETYURvHDXmuQNULL/ZBoKxxgFMg=",
+  "email_sender": semaphore_email_sender,
+  "email_host": semaphore_email_host,
+  "email_port": semaphore_email_port,
+  "web_host": semaphore_web_host,
+  "ldap_binddn": semaphore_ldap_binddn,
+  "ldap_bindpassword": semaphore_ldap_bindpassword,
+  "ldap_server": semaphore_ldap_server,
+  "ldap_searchdn": semaphore_ldap_searchdn,
+  "ldap_searchfilter": semaphore_ldap_searchfilter,
+  "ldap_mappings":  {
+    "dn": semaphore_ldap_mapping_dn,
+    "mail": semaphore_ldap_mapping_mail,
+    "uid": semaphore_ldap_mapping_uid,
+    "cn": semaphore_ldap_mapping_cn
+    },
+  "telegram_chat": semaphore_telegram_chat,
+  "telegram_token": semaphore_telegram_token,
+  "concurrency_mode": semaphore_concurrency_mode,
+  "max_parallel_tasks": semaphore_max_parallel_tasks,
+  "email_alert": semaphore_email_alert,
+  "telegram_alert": semaphore_telegram_alert,
+  "slack_alert": semaphore_slack_alert,
+  "slack_url": semaphore_slack_url,
+  "rocketchat_alert": semaphore_rocketchat_alert,
+  "rocketchat_url": semaphore_rocketchat_url,
+  "ldap_enable": semaphore_ldap_enable,
+  "ldap_needtls": semaphore_ldap_needtls
+} | tojson }}

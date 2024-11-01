@@ -1,0 +1,41 @@
+semaphore_bolt_host: "/home/ubuntu/semaphore.bolt"
+semaphore_mysql_host: "localhost"
+semaphore_mysql_user: "root"
+semaphore_mysql_pass: "*****"
+semaphore_mysql_db_name: "semaphore"
+semaphore_postgres_host: "localhost"
+semaphore_postgres_user: "{{ postgresql_users[1].name }}"
+semaphore_postgres_pass: "{{ postgresql_users[1].password }}"
+semaphore_postgres_db_name: "{{ postgresql_databases[0].name }}"
+semaphore_dialect: "postgres"
+semaphore_port: "3000"
+semaphore_interface: ""
+semaphore_tmp_path: "/tmp/semaphore"
+semaphore_cookie_hash: ""
+semaphore_cookie_encryption: ""
+semaphore_access_key_encryption: ""
+semaphore_email_sender: ""
+semaphore_email_host: ""
+semaphore_email_port: ""
+semaphore_web_host: ""
+semaphore_ldap_binddn: ""
+semaphore_ldap_bindpassword: ""
+semaphore_ldap_server: ""
+semaphore_ldap_searchdn: ""
+semaphore_ldap_searchfilter: ""
+semaphore_ldap_mapping_dn: ""
+semaphore_ldap_mapping_mail: ""
+semaphore_ldap_mapping_uid: ""
+semaphore_ldap_mapping_cn: ""
+semaphore_telegram_chat: ""
+semaphore_telegram_token: ""
+semaphore_concurrency_mode: ""
+semaphore_max_parallel_tasks: 0
+semaphore_email_alert: false
+semaphore_telegram_alert: false
+semaphore_slack_alert: false
+semaphore_slack_url: ""
+semaphore_rocketchat_alert: false
+semaphore_rocketchat_url: ""
+semaphore_ldap_enable: false
+semaphore_ldap_needtls: false

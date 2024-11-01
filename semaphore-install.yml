@@ -1,0 +1,127 @@
+---
+- name: Установка и настройка Semaphore + PostgreSQL
+  hosts: localhost
+  become: true
+  vars_files:
+    - postgres_vars.yml
+    - semaphore_vars.yml
+
+
+  roles:
+    - geerlingguy.postgresql
+    
+  tasks:
+
+        
+        
+    - name: Скачивание пакета Semaphore (если необходимо)
+      ansible.builtin.get_url:
+        url: https://github.com/semaphoreui/semaphore/releases/download/v2.10.35/semaphore_2.10.35_linux_amd64.deb
+        dest: /tmp/semaphore_2.10.35_linux_amd64.deb
+        mode: '0644'
+
+
+
+    - name: Установка пакета Semaphore
+      ansible.builtin.apt:
+        deb: /tmp/semaphore_2.10.35_linux_amd64.deb
+
+      register: semaphore_installed
+
+    - name: Создать пользователя semaphore
+      ansible.builtin.user:
+        name: semaphore
+        shell: /bin/false  # Установите оболочку, если не хотите, чтобы пользователь входил в систему
+        state: present
+
+    - name: Создать каталог для конфигурации Semaphore
+      ansible.builtin.file:
+        path: /opt/semaphore
+        state: directory
+        owner: semaphore
+        group: semaphore
+      become: yes
+
+    - name: Создание конфигурационного файла Semaphore
+      ansible.builtin.template:
+        src: templates/semaphore_config.j2
+        dest: /opt/semaphore/config.json
+
+      
+
+    - name: Создать systemd unit файл для Semaphore
+      ansible.builtin.copy:
+        dest: /etc/systemd/system/semaphore.service
+        content: |
+          [Unit]
+          Description=Semaphore Ansible
+          Documentation=https://github.com/ansible-semaphore/semaphore
+          Wants=network-online.target
+          After=network-online.target
+
+          [Service]
+          Type=simple
+          User=semaphore
+          Group=semaphore
+          ExecReload=/bin/kill -HUP $MAINPID
+          ExecStart=/usr/bin/semaphore server --config=/opt/semaphore/config.json
+          SyslogIdentifier=semaphore
+          Restart=always
+
+          [Install]
+          WantedBy=multi-user.target
+          
+      become: yes
+
+
+
+
+    - name: Перезагрузить systemd для обнаружения новых сервисов
+      ansible.builtin.systemd:
+        daemon_reload: yes
+      become: yes
+
+    - name: Запустить и включить Semaphore как сервис
+      ansible.builtin.systemd:
+        name: semaphore
+        enabled: yes
+        state: started
+      become: yes
+    
+
+    - name: Сбор информации о службах
+      service_facts:
+      
+    - name: Проверка состояния Semaphore
+      debug:
+        msg: "Служба Semaphore {{ ansible_facts.services['semaphore.service'].state }}"
+      when: "'semaphore.service' in ansible_facts.services"
+
+    - name: Проверка, если Semaphore не запущен
+      debug:
+        msg: "Служба Semaphore не запущена."
+      when: "'semaphore.service' not in ansible_facts.services or ansible_facts.services['semaphore.service'].state != 'running'"
+      
+    - name: Ожидание запуска сервиса
+      wait_for:
+        host: localhost
+        port: 3000
+        timeout: 30  # Время ожидания в секундах
+        
+      
+    - name: Проверка наличия пользователя
+      command: semaphore user list --config /opt/semaphore/config.json
+      register: user_list
+      
+    - name: Создать если admin не найден
+      command: semaphore user add --admin --login administrator --email administrator@example.com --name "administrator" --password "administrator" --config /opt/semaphore/config.json
+      when: "'administrator' not in user_list.stdout"
+      register: add_user_result
+      ignore_errors: yes
+      
+    - name: Отобразить состояние если пользователь создан
+      debug:
+        msg: "Administrator 'administrator' уже создан."
+      when: add_user_result is failed or add_user_result is skipped
+      
+
